@@ -1,39 +1,54 @@
 var express = require('express');
 const router = require('express').Router();
 router.use(express.json());
+
+
 const jsonfile = require('jsonfile')
 const json = require('./../db/tasks.json')
 
-jsonfile.readFile(json)
-  .then(obj => console.dir(obj))
-  .catch(error => console.error(error))
+
+const Task = require('./../models/task');
+
+
 
 router.use(express.urlencoded({ extended: true }));
-router.get('/gettasks', (req, res)=>{
-    
 
-    res.status(200).json(json)
+//conseguir todas las tareas registradas
+router.get('/gettasks', async (req, res)=>{
+    
+    try {
+        const task = await Task.find();
+        res.status(200).json(task)
+    } catch (error) {
+        return res.status(500).json(err);
+    }
     
 });
 
 
-router.post('/newtask',(req, res)=>{
+//obetner una tarea en especifico en funcion de su titulo
 
-    
-    (req.body.userId === json.task.userId)
-    ? console.log("Este id ya esta repetido")
+router.post('/task:tittle', async (req,res)=>{
 
-    : console.log("OK")
+    if (req.params.tittle === req.b) {
         
-    
-    
-    var task = {
-        userId : req.body.userId,
-        tittle : req.body.tittle,
-        description : req.body.description
+    }
+})
+
+
+router.post('/newtask', async (req, res)=>{
+
+    const taskifexist = await Task.findOne({ tittle: req.body.tittle });
+    // console.log(req.params.tittle)
+    var task = {tittle : req.body.tittle, description : req.body.description}
+
+    if (taskifexist) {
+        res.status(404).send('La tarea ya esta registrada')
+    } else {
+        const newTask = await Task.create(task)
+        res.status(200).json(newTask);
     }
     
-    res.status(200).json(task);
     
 
 })
