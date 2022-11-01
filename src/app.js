@@ -10,6 +10,8 @@ const dotenv = require('dotenv');
 const mongooseClient = require('mongoose');
 
 const taskroutes = require('./routes/taskroutes')
+const authroutes = require('./routes/authroutes')
+const userroutes = require('./routes/userroutes')
 dotenv.config();
 //bbdd connection
 mongooseClient.connect(process.env.MONGO_URL, {useNewUrlParser: true},()=>{
@@ -23,7 +25,8 @@ mongooseClient.connect(process.env.MONGO_URL, {useNewUrlParser: true},()=>{
 })
 
 app.use('/api/tasks', taskroutes)
-
+app.use('/api/auth', authroutes)
+// app.use('/api/user', userroutes)
 
 
 

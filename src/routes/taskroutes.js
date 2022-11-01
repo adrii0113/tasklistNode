@@ -3,13 +3,7 @@ const router = require('express').Router();
 router.use(express.json());
 
 
-const jsonfile = require('jsonfile')
-const json = require('./../db/tasks.json')
-
-
 const Task = require('./../models/task');
-
-
 
 router.use(express.urlencoded({ extended: true }));
 
@@ -83,6 +77,14 @@ router.post('/updatetask', async (req, res ) =>{
 
 
 //mostrar la informacion de una tarea ya sea buscando mediante la descripccion o el titulo
+router.post('/gettask', async ()=>{
+
+
+
+
+
+
+})
 
 module.exports = router;
 

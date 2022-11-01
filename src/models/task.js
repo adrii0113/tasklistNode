@@ -16,7 +16,7 @@ const TaskSchema = new mongooseClient.Schema({
         max: 50
     },
    
-    completada: {
+    completed: {
         type:Boolean,
         default: false
     }
