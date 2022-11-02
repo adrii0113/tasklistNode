@@ -22,26 +22,28 @@ router.post('/register', async (req,res) =>{
     const phone = await User.findOne({ phone: req.body.phone });
 
     if(!email || !userName || !phone){
-        function hashing(){
-            let hashedPassword = '';
-            bcrypt.hash(req.body.password, saltRounds, (err, hash) =>{
-                hashedPassword = hash;
-                // console.log(hashedPassword);
-            })
-            return hashedPassword;
-        }
+        // function hashing(){
+        //     let hashedPassword = '';
+        //     bcrypt.hash(req.body.password, saltRounds, (err, hash) =>{
+        //         hashedPassword = hash;
+        //         // console.log(hashedPassword);
+        //     })
+        //     return hashedPassword;
+        // }
 
-        console.log(hashing().length)
-     
-        const newUser = {
+        // console.log(hashing().length)
+        const encrypt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, encrypt);
+
+        const newUser = new User({
             userName : req.body.userName,
             fullName : req.body.fullName,
             email : req.body.email,
-            password : req.body.password,
+            password : hashedPassword,
             profilePic : req.body.profilePic,
             phone : req.body.phone
-        }
-        const usercreated = User.create(newUser);
+        });
+        const usercreated = await newUser.save();
         res.status(200).json(usercreated);
     } else {
 
