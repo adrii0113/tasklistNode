@@ -4,7 +4,7 @@ router.use(express.json());
 
 // encript password
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+// const saltRounds = 10;
 
 // end encript requirements
 
@@ -22,16 +22,7 @@ router.post('/register', async (req,res) =>{
     const phone = await User.findOne({ phone: req.body.phone });
 
     if(!email || !userName || !phone){
-        // function hashing(){
-        //     let hashedPassword = '';
-        //     bcrypt.hash(req.body.password, saltRounds, (err, hash) =>{
-        //         hashedPassword = hash;
-        //         // console.log(hashedPassword);
-        //     })
-        //     return hashedPassword;
-        // }
-
-        // console.log(hashing().length)
+       
         const encrypt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, encrypt);
 
@@ -56,14 +47,19 @@ router.post('/login', async(req,res) =>{
 
     const userEmail = await User.findOne({email: req.body.email});
     
-    // const userPassword = await User.findOne({email: req.body.password});
 
     if (!userEmail) {
         res.status(500).json('We dont find any user with that email');
     } else {
         
-        if (userEmail.email === req.body.email && userEmail.password === req.body.password) {
-            res.status(200).json(userEmail);
+        if (userEmail.email === req.body.email ) {
+            const validPassword = await bcrypt.compare(req.body.password, userEmail.password);
+            if (!validPassword){
+                res.status(500).json('Inicio de sesion incorrecto')
+            } else {
+
+                res.status(200).json(userEmail);
+            }
         } else {
             res.status(404).json('Credentials dasent match');
         }
@@ -71,10 +67,6 @@ router.post('/login', async(req,res) =>{
 
     
 })
-
-
-
-
 
 
 module.exports = router;
