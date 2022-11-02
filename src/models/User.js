@@ -36,7 +36,7 @@ const UserSchema = new mongooseClient.Schema({
     phone: {
         type: String,
         required: true,
-        unique: true
+        // unique: true
     },
     // con este campo comprobamos si el usuario es administrador de la aplicacion
     admin: {
