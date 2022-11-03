@@ -15,6 +15,11 @@ const TaskSchema = new mongooseClient.Schema({
         min: 1,
         max: 50
     },
+    userId:{
+        type : String,
+        required : true,
+        unique : true
+    },
    
     completed: {
         type:Boolean,
