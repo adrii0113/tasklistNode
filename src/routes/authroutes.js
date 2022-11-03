@@ -8,6 +8,9 @@ const bcrypt = require('bcrypt');
 
 // end encript requirements
 
+// jwt
+const jwt = require('jsonwebtoken');
+// end jwt
 
 const User = require('./../models/User');
 
@@ -58,7 +61,18 @@ router.post('/login', async(req,res) =>{
                 res.status(500).json('Inicio de sesion incorrecto')
             } else {
 
-                res.status(200).json(userEmail);
+                const userForToken = {
+                    id: userEmail._id,
+                    username: userEmail.userName
+                }
+
+                const token = jwt.sign(userForToken, process.env.SECRET);
+                res.send({
+                    email: userEmail.email,
+                    userName: userEmail.userName,
+                    token
+                })
+                // res.status(200).json(userEmail);
             }
         } else {
             res.status(404).json('Credentials dasent match');

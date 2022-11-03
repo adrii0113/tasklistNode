@@ -1,4 +1,5 @@
 var express = require('express');
+const jwt = require('jsonwebtoken');
 const router = require('express').Router();
 router.use(express.json());
 
@@ -34,7 +35,19 @@ router.post('/newtask', async (req, res)=>{
     const taskifexist = await Task.findOne({ tittle: req.body.tittle });
     // console.log(req.params.tittle)
     var task = {tittle : req.body.tittle, description : req.body.description}
+    const authorization = req.get('authorization');
+    let token = '';
+    if(authorization && authorization.toLocaleLowerCase().startsWith('bearer')){
+        token = authorization.substring(7);
+    }
+    let decodedToken ={}
+    try {
+        decodedToken = jwt.verify(token, process.env.SECRET) 
+    } catch (e) {res.status(401).json({error: 'Invalid token or missing authorization'});}
 
+    if(!token || !decodedToken.id){
+        return res.status(401).json({error: 'Invalid token or missing authorization'});
+    }
     if (taskifexist) {
         res.status(404).send('La tarea ya esta registrada')
     } else {
