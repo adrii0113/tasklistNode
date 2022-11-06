@@ -8,6 +8,7 @@ const Task = require('./../models/task');
 const verifyToken = require('./../utils/jwtFunctions');
 router.use(express.urlencoded({ extended: true }));
 
+
 //conseguir todas las tareas registradas
 router.get('/gettasks', async (req, res)=>{
     
@@ -22,11 +23,16 @@ router.get('/gettasks', async (req, res)=>{
 
 //obetner una tarea en especifico en funcion de su titulo
 
-router.post('/task:tittle', async (req,res)=>{
+router.post('/taskinfo', async (req,res)=>{
 
-    if (req.params.tittle === req.b) {
-        
-    }
+    const taskifexist = await Task.findOne({ tittle: req.body.tittle });
+    
+   verifyToken(req,res);
+
+   (taskifexist)
+        ? res.status(200).json(taskifexist)
+        : res.status(404).json({error : 'Task not found'})
+   
 })
 
 //crear una tarea
@@ -36,21 +42,8 @@ router.post('/newtask', async (req, res)=>{
     
     var task = {tittle : req.body.tittle, description : req.body.description, userId : req.body.userId}
 
-    // JWT LOGIC
-    const authorization = req.get('authorization');
-    let token = '';
-    if(authorization && authorization.toLocaleLowerCase().startsWith('bearer')){
-        token = authorization.substring(7);
-    }
-    let decodedToken ={}
-    try {
-        decodedToken = jwt.verify(token, process.env.SECRET) 
-    } catch (e) {res.status(401).json({error: 'Invalid token or missing authorization'});}
-
-    if(!token || !decodedToken.id){
-        return res.status(401).json({error: 'Invalid token or missing authorization'});
-    }
-    // END JWT LOGIC
+    // verify if the user who is attampting to create a new task is already registered in the database
+    verifyToken(req,res)
     
 
     if (taskifexist) {
@@ -67,7 +60,9 @@ router.delete('/deletetask', async (req, res) =>{
 
     const taskifexist = await Task.findOne({ tittle: req.body.tittle });
     
-    
+    // verify if the user who is attampting to create a new task is already registered in the database
+    verifyToken(req,res)
+
     if (taskifexist) {
         if (taskifexist.userId === req.body.userId) {
 
@@ -88,6 +83,10 @@ router.post('/updatetask', async (req, res ) =>{
    
     //find task for update
     const tasktoupdate = await Task.findOne({ tittle: req.body.tittle });
+
+
+    // verify if the user who is attampting to create a new task is already registered in the database
+    verifyToken(req,res)
 
     //if exists update
     if (tasktoupdate) {

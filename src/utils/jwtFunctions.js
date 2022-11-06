@@ -2,8 +2,8 @@
 const jwt = require('jsonwebtoken');
 
 
-const verifyToken = (req,res  ) => {
-    console.log('')
+const verifyToken = (req,res) => {
+
     const authorization = req.get('authorization');
     let token = '';
     if(authorization && authorization.toLocaleLowerCase().startsWith('bearer')){
@@ -18,8 +18,6 @@ const verifyToken = (req,res  ) => {
         return res.status(401).json({error: 'Invalid token or missing authorization'});
     }
 }
-
-
 
 
 module.exports = verifyToken;
