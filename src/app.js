@@ -26,7 +26,8 @@ mongooseClient.connect(process.env.MONGO_URL, {useNewUrlParser: true},()=>{
 
 app.use('/api/tasks', taskroutes)
 app.use('/api/auth', authroutes)
-// app.use('/api/user', userroutes)
+app.use('/api/user', userroutes);
+
 
 
 
