@@ -1,41 +1,67 @@
 
+import axios from 'axios'
+
+import { useRef } from "react";
+
 export default function Register(){
 
-    // const user = {
-    //     username : 
-    // }
-
-    const username = useRef();
+    const userName = useRef();
     const nombreCompleto = useRef();
     const email = useRef();
     const password = useRef();
+    const phone = useRef();
+    
+    function registerUser(){
+        
+        const user = {
+            userName : userName.current.value,
+            fullName : nombreCompleto.current.value,
+            email : email.current.value,
+            password : password.current.value,
+            phone : phone.current.value
+        }
+
+        axios.post('http://localhost:3000/api/auth/register',user)
+        .then(function (response) {
+            // handle success
+            console.log(response);
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .then(function () {
+            // always executed
+          });
+    }
+    
     return(
 
         <div className="form">
         <div className="form-body">
             <div className="username">
                 <label className="form__label" for="Username">Username </label>
-                <input className="form__input" type="text" id="Username" placeholder="Username" ref={username}/>
+                <input className="form__input" type="text" id="Username" placeholder="Username" ref={userName}/>
             </div>
-            <div className="lastname">
-                <label className="form__label" for="name">Name </label>
-                <input  type="text" name="" id="name"  className="form__input"placeholder="name"/>
+            <div className="nombreCompleto">
+                <label className="form__label" for="nombreCompleto">Nombre completo</label>
+                <input  type="text" name="nombreCompleto" id="nombreCompleto"  className="form__input"placeholder="nombreCompleto" ref={nombreCompleto}/>
             </div>
             <div className="email">
                 <label className="form__label" for="email">Email</label>
-                <input  type="email" id="email" className="form__input" placeholder="Email"/>
+                <input  type="email" id="email" className="form__input" placeholder="Email" ref={email}/>
             </div>
             <div className="password">
                 <label className="form__label" for="password">Password </label>
-                <input className="form__input" type="password"  id="password" placeholder="Password"/>
+                <input className="form__input" type="password"  id="password" placeholder="Password" ref={password}/>
             </div>
             <div className="confirm-password">
-                <label className="form__label" for="confirmPassword">Confirm Password </label>
-                <input className="form__input" type="password" id="confirmPassword" placeholder="Confirm Password"/>
+                <label className="phone" for="phone">Confirm Password </label>
+                <input className="form__input" type="text" id="phone" placeholder="phone" ref={phone}/>
             </div>
         </div>
         <div class="footer">
-            <button type="submit" class="btn">Register</button>
+            <button  onClick={registerUser}type="submit" class="btn">Register</button>
         </div>
     </div>      
     )
