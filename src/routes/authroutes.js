@@ -2,85 +2,18 @@ var express = require('express');
 const router = require('express').Router();
 router.use(express.json());
 
-// encript password
-const bcrypt = require('bcrypt');
-// const saltRounds = 10;
-
-// end encript requirements
-
-// jwt
-const jwt = require('jsonwebtoken');
-// end jwt
-
-const User = require('./../models/User');
-
-// register new user 
+// controllers
+const { registerUser } = require('./../controller/authcontroller');
+const { loginUser } = require('./../controller/authcontroller');
 
 
-router.post('/register', async (req,res) =>{
 
+// register new user route that call the controller method
+router.post('/register', registerUser);
 
-    const email = await User.findOne({ email: req.body.email });
-    const userName = await User.findOne({ userName: req.body.userName });
-    const phone = await User.findOne({ phone: req.body.phone });
+//login user route that call the controller method
+router.post('/login', loginUser);
 
-    if(!email || !userName || !phone){
-       
-        const encrypt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, encrypt);
-
-        const newUser = new User({
-            userName : req.body.userName,
-            fullName : req.body.fullName,
-            email : req.body.email,
-            password : hashedPassword,
-            profilePic : req.body.profilePic,
-            phone : req.body.phone
-        });
-        const usercreated = await newUser.save();
-        res.status(200).json(usercreated);
-    } else {
-
-        res.status(404).json('El usuario que intentas crear ya existe')
-    }
-})
-
-
-router.post('/login', async(req,res) =>{
-
-    const userEmail = await User.findOne({email: req.body.email});
-    
-
-    if (!userEmail) {
-        res.status(500).json('We dont find any user with that email');
-    } else {
-        
-        if (userEmail.email === req.body.email ) {
-            const validPassword = await bcrypt.compare(req.body.password, userEmail.password);
-            if (!validPassword){
-                res.status(500).json('Inicio de sesion incorrecto')
-            } else {
-
-                const userForToken = {
-                    id: userEmail._id,
-                    username: userEmail.userName
-                }
-
-                const token = jwt.sign(userForToken, process.env.SECRET);
-                res.send({
-                    email: userEmail.email,
-                    userName: userEmail.userName,
-                    token
-                })
-                // res.status(200).json(userEmail);
-            }
-        } else {
-            res.status(404).json('Credentials dasent match');
-        }
-    }
-
-    
-})
 
 
 module.exports = router;

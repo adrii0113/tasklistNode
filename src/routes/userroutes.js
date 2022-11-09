@@ -30,7 +30,7 @@ router.post('/change-password', async (req, res) =>{
     if (user) 
         {
             if(user.email === req.body.email){
-            const oldPassword = req.body.oldPassword;
+            
             const validPassword = await bcrypt.compare(req.body.oldPassword,user.password );
             console.log(validPassword)
                 if (!validPassword) {
@@ -50,8 +50,13 @@ router.post('/change-password', async (req, res) =>{
         res.status(401).json('Task doasent exist');
     }
 
+})
+
+
+router.post('/updateuser', async (req,res) =>{
+
+    const user = await User.findOne({email: req.body.email});
     
-  
 
 })
 
