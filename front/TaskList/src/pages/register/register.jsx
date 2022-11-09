@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 import { useRef } from "react";
-
+import { newUser} from './../../utils/fetchfunctions';
 export default function Register(){
 
     const userName = useRef();
@@ -21,18 +21,8 @@ export default function Register(){
             phone : phone.current.value
         }
 
-        axios.post('http://localhost:3000/api/auth/register',user)
-        .then(function (response) {
-            // handle success
-            console.log(response);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .then(function () {
-            // always executed
-          });
+        newUser(user);
+      
     }
     
     return(
