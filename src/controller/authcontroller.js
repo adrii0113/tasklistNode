@@ -41,35 +41,41 @@ const registerUser = async  (req, res = response) => {
 
 const loginUser = async (req, res = response) => {
 
-    const userEmail = await User.findOne({email: req.body.email});
-    
-
-    if (!userEmail) {
-        res.status(500).json('We dont find any user with that email');
-    } else {
+    if (validateEmail(req.body.email)) {
         
-        if (userEmail.email === req.body.email ) {
-            const validPassword = await bcrypt.compare(req.body.password, userEmail.password);
-            if (!validPassword){
-                res.status(401).json('Inicio de sesion incorrecto')
-            } else {
+    
+        const userEmail = await User.findOne({email: req.body.email});
+        
 
-                const userForToken = {
-                    id: userEmail._id,
-                    username: userEmail.userName
-                }
-
-                const token = jwt.sign(userForToken, process.env.SECRET);
-                res.send({
-                    email: userEmail.email,
-                    userName: userEmail.userName,
-                    token
-                })
-                // res.status(200).json(userEmail);
-            }
+        if (!userEmail) {
+            res.status(500).json('We dont find any user with that email');
         } else {
-            res.status(404).json('Credentials dasent match');
+            
+            if (userEmail.email === req.body.email ) {
+                const validPassword = await bcrypt.compare(req.body.password, userEmail.password);
+                if (!validPassword){
+                    res.status(401).json('Inicio de sesion incorrecto')
+                } else {
+
+                    const userForToken = {
+                        id: userEmail._id,
+                        username: userEmail.userName
+                    }
+
+                    const token = jwt.sign(userForToken, process.env.SECRET);
+                    res.send({
+                        email: userEmail.email,
+                        userName: userEmail.userName,
+                        token
+                    })
+                    // res.status(200).json(userEmail);
+                }
+            } else {
+                res.status(404).json('Credentials dasent match');
+            }
         }
+    } else {
+        res.status(401).json('Credentials format is incorrect')
     }
 
 }
