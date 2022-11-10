@@ -1,15 +1,21 @@
 const {response } = require('express');
-
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+
+
+const {validateEmail, isValidPhone} = require('./../utils/validationFunctions');
 const User = require('./../models/User');
 
 const registerUser = async  (req, res = response) => {
+    
+    if(validateEmail(req.body.email) && isValidPhone(req.body.phone)){
 
+    
     const email = await User.findOne({ email: req.body.email });
     const userName = await User.findOne({ userName: req.body.userName });
     const phone = await User.findOne({ phone: req.body.phone });
-
+    
     if(!email || !userName || !phone){
        
         const encrypt = await bcrypt.genSalt(10);
@@ -29,7 +35,7 @@ const registerUser = async  (req, res = response) => {
 
         res.status(404).json('El usuario que intentas crear ya existe')
     }
-
+    } else {res.status(401).json('Credentials format is incorrect')}
 }
 
 
