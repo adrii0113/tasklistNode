@@ -23,10 +23,10 @@ const isValidPhone = (phone) => {
 }
   
 
-const isSecurePassword = (password) => {
+const isSecurePassword = (p) => {
     
   const errors = [];
-  if(password.length < 8){errors.push("Password must be at least 8 characters")}
+  if(p.length < 8){errors.push("Password must be at least 8 characters")}
   if (p.length > 32) {
     errors.push("Your password must be at max 32 characters");
   }
