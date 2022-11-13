@@ -21,7 +21,7 @@ const config = {
             ]
         }
 }}
-
+const Task = require('./models/task');
 const taskroutes = require('./routes/taskroutes')
 const authroutes = require('./routes/authroutes')
 const userroutes = require('./routes/userroutes')
@@ -31,7 +31,13 @@ app.use(cors(
   ));
 dotenv.config();
 //bbdd connection
-mongooseClient.connect(process.env.MONGO_URL, {useNewUrlParser: true},()=>{
+const {MONGO_URL, MONGO_URL_TEST, NODE_ENV} = process.env;
+const connectionString = NODE_ENV === 'test'
+    ? MONGO_URL_TEST
+    : MONGO_URL
+
+
+mongooseClient.connect(connectionString, {useNewUrlParser: true},()=>{
     // Mensaje de confirmacion de conexion
     try {
         console.log('Conectado a bbdd')
@@ -46,9 +52,7 @@ app.use('/api/auth', authroutes)
 app.use('/api/user', userroutes);
 
 
-
-
-
 app.listen(3000, ()=>{
     console.log("App lister on port 3000")
 })
+
