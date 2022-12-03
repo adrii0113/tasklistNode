@@ -46,7 +46,7 @@ export default function Register(){
                 <input className="form__input" type="password"  id="password" placeholder="Password" ref={password}/>
             </div>
             <div className="confirm-password">
-                <label className="phone" for="phone">Confirm Password </label>
+                <label className="phone" for="phone">Phone </label>
                 <input className="form__input" type="text" id="phone" placeholder="phone" ref={phone}/>
             </div>
         </div>
